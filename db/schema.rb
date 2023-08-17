@@ -10,12 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-
-#NEVER EDITS THIS BY HAND
-
-ActiveRecord::Schema.define(version: 2023_08_11_044928) do
+ActiveRecord::Schema.define(version: 2023_08_17_005121) do
 
   # These are extensions that must be enabled in order to support this database
+  enable_extension "citext"
   enable_extension "plpgsql"
 
   create_table "comments", force: :cascade do |t|
@@ -31,7 +29,7 @@ ActiveRecord::Schema.define(version: 2023_08_11_044928) do
   create_table "follow_requests", force: :cascade do |t|
     t.bigint "recipient_id", null: false
     t.bigint "sender_id", null: false
-    t.string "status"
+    t.string "status", default: "pending"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["recipient_id"], name: "index_follow_requests_on_recipient_id"
@@ -59,19 +57,21 @@ ActiveRecord::Schema.define(version: 2023_08_11_044928) do
   end
 
   create_table "users", force: :cascade do |t|
-    t.string "email", default: "", null: false
+    t.citext "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
     t.string "reset_password_token"
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
-    t.string "username"
+    t.citext "username"
     t.boolean "private"
-    t.integer "likes_count"
-    t.integer "comments_count"
+    t.integer "likes_count", default: 0
+    t.integer "comments_count", default: 0
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.integer "photos_count"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
+    t.index ["username"], name: "index_users_on_username", unique: true
   end
 
   add_foreign_key "comments", "photos"
