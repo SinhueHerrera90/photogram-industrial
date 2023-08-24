@@ -10,16 +10,20 @@ task sample_data: :environment do
     User.destroy_all
   end
 
-  10.times do
-    name =  Faker::Name.first_name.downcase
-    u = User.create(
-      email: "#{name}@example.com",
-      username: name,
-      password: "password",
-      private: [true,false].sample
-    )
-    p u.errors.full_messages #=> to check for errors on each record, there are no errors, terminal will print []
+    usernames = Array.new{Faker::Name.first_name}
 
+    usernames << "alice"
+    usernames << "bob"
+
+
+    usernames.each do |username|
+    User.create(
+      email: "#{username}@example.com",
+      password: "password",
+      username: username.downcase, 
+     private: [true,false].sample,
+    )
+ 
 
   end
 
